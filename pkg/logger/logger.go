@@ -1,11 +1,15 @@
 package logger
 
 import (
+	"io"
+	"log"
 	"log/slog"
 	"os"
 )
 
 var Logger *slog.Logger
+
+var file *os.File
 
 func InitLog(stage string) {
 	var level slog.Level
@@ -21,8 +25,25 @@ func InitLog(stage string) {
 	default:
 		level = slog.LevelInfo
 	}
-	handler := slog.NewJSONHandler(os.Stdout, &slog.HandlerOptions{Level: level})
+
+	if err := os.MkdirAll("logs", 0755); err != nil {
+		log.Fatal(err)
+	}
+
+	file, err := os.OpenFile("logs/app.log", os.O_CREATE|os.O_WRONLY|os.O_APPEND, 0644)
+	if err != nil {
+		log.Fatal("Не удалось открыть файл для логирования", err)
+	}
+
+	MultiWriter := io.MultiWriter(file, os.Stdout)
+	handler := slog.NewJSONHandler(MultiWriter, &slog.HandlerOptions{Level: level})
 
 	Logger = slog.New(handler)
 	slog.SetDefault(Logger)
+}
+
+func CloseFile() {
+	if file != nil {
+		file.Close()
+	}
 }

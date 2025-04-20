@@ -4,9 +4,9 @@ import (
 	"To_Do/config"
 	"To_Do/pkg/database"
 	"To_Do/pkg/logger"
-	"fmt"
 	"github.com/joho/godotenv"
 	"log"
+	"os"
 )
 
 func main() {
@@ -23,18 +23,21 @@ func main() {
 
 	cfg := config.LoadConfig()
 	logger.InitLog(cfg.LogLevel)
+	defer logger.CloseFile()
 	logger.Logger.Info("Запуск приложения")
 
 	db, err := database.InitDb(cfg.Database)
 	if err != nil {
 		logger.Logger.Error("Ошибка инициализации данных", "err", err)
-		return
+		logger.CloseFile()
+		os.Exit(1)
 	}
 
-	fmt.Println("PORT", cfg.Port)
-	fmt.Println("Database", cfg.Database)
-	fmt.Println("Env", cfg.Env)
-	fmt.Println("LogLevel", cfg.LogLevel)
+	logger.Logger.Info("Конфигурация загружена",
+		"port", cfg.Port,
+		"env", cfg.Env,
+		"log_level", cfg.LogLevel,
+	)
 
 	logger.Logger.Info("Успешное подключение к базе данных")
 	// TODO: передать db в слой хранилища (repository/service)
