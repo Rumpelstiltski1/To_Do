@@ -2,6 +2,8 @@ package main
 
 import (
 	"To_Do/config"
+	"To_Do/internal/handlers"
+	"To_Do/internal/repository"
 	"To_Do/pkg/database"
 	"To_Do/pkg/logger"
 	Mymiddleware "To_Do/pkg/middleware"
@@ -67,9 +69,12 @@ func main() {
 		}
 
 	}()
+	storage := repository.NewStorage(db)
+	router.Post("/create", handlers.CreateTaskHandler(storage))
 
 	<-sigChan
 	logger.Logger.Info("Начало завершения работы")
+	cancel()
 
 	if err := server.Shutdown(ctx); err != nil {
 		logger.Logger.Error("Не удалось завершить работу сервера за отведенное время", "err", err)
