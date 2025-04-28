@@ -2,14 +2,11 @@ package main
 
 import (
 	"To_Do/config"
-	"To_Do/internal/handlers"
+	"To_Do/internal/httpserver"
 	"To_Do/internal/repository"
 	"To_Do/pkg/database"
 	"To_Do/pkg/logger"
-	Mymiddleware "To_Do/pkg/middleware"
 	"context"
-	"github.com/go-chi/chi/v5"
-	"github.com/go-chi/chi/v5/middleware"
 	"github.com/joho/godotenv"
 	"log"
 	"net/http"
@@ -38,19 +35,8 @@ func main() {
 	}
 	defer db.Close()
 
-	router := chi.NewRouter()
-	router.Use(middleware.RequestID)
-	router.Use(middleware.Timeout(30 * time.Second))
-	router.Use(Mymiddleware.SlogMiddleware)
-
-	server := &http.Server{
-		Addr:              cfg.Port,
-		Handler:           router,
-		ReadTimeout:       cfg.Server.ReadTimeout,
-		ReadHeaderTimeout: cfg.Server.ReadHeaderTimeout,
-		WriteTimeout:      cfg.Server.WriteTimeout,
-		IdleTimeout:       cfg.Server.IdleTimeout,
-	}
+	storage := repository.NewStorage(db)
+	server := httpserver.NewServer(cfg, storage)
 
 	ctx, cancel := context.WithTimeout(context.Background(), 10*time.Second)
 	defer cancel()
@@ -69,14 +55,12 @@ func main() {
 		}
 
 	}()
-	storage := repository.NewStorage(db)
-	router.Post("/create", handlers.CreateTaskHandler(storage))
 
 	<-sigChan
 	logger.Logger.Info("Начало завершения работы")
 	cancel()
 
-	if err := server.Shutdown(ctx); err != nil {
+	if err := httpserver.ShutdownServer(ctx, server); err != nil {
 		logger.Logger.Error("Не удалось завершить работу сервера за отведенное время", "err", err)
 	} else {
 		logger.Logger.Info("Работа сервера прекращена корректно")
