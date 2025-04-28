@@ -8,7 +8,7 @@ import (
 	"net/http"
 )
 
-func PutTaskHandler(storage *repository.Storage) http.HandlerFunc {
+func PutTaskHandler(storage repository.StorageInterface) http.HandlerFunc {
 	return func(w http.ResponseWriter, r *http.Request) {
 		var bodys models.PutTaskRequest
 		if err := json.NewDecoder(r.Body).Decode(&bodys); err != nil {
