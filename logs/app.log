@@ -53,3 +53,47 @@
 {"time":"2025-04-29T01:13:21.4393586+04:00","level":"INFO","msg":"Входящий запрос","Method":"PUT","Path":"/done","Time":2959300}
 {"time":"2025-04-29T01:13:39.5702182+04:00","level":"INFO","msg":"Начало завершения работы"}
 {"time":"2025-04-29T01:13:39.5716042+04:00","level":"INFO","msg":"Работа сервера прекращена корректно"}
+{"time":"2025-05-01T05:57:49.9900044+04:00","level":"INFO","msg":"Сервер запущен","port":":9999"}
+{"time":"2025-05-01T05:58:17.4195462+04:00","level":"INFO","msg":"Начало завершения работы"}
+{"time":"2025-05-01T05:58:17.4207319+04:00","level":"INFO","msg":"Работа сервера прекращена корректно"}
+{"time":"2025-05-01T07:05:18.3979599+04:00","level":"INFO","msg":"Сервер запущен","port":":9999"}
+{"time":"2025-05-01T07:05:20.3678465+04:00","level":"INFO","msg":"Начало завершения работы"}
+{"time":"2025-05-01T07:05:20.3683606+04:00","level":"INFO","msg":"Работа сервера прекращена корректно"}
+{"time":"2025-05-04T21:08:44.0359864+04:00","level":"INFO","msg":"Сервер запущен","port":":9999"}
+{"time":"2025-05-04T21:09:24.6496636+04:00","level":"INFO","msg":"Входящий запрос","Method":"GET","Path":"/list","Time":47652400}
+{"time":"2025-05-04T21:10:27.9809016+04:00","level":"INFO","msg":"Входящий запрос","Method":"DELETE","Path":"/done","Time":0}
+{"time":"2025-05-04T21:11:03.5193151+04:00","level":"INFO","msg":"Входящий запрос","Method":"DELETE","Path":"//delete","Time":0}
+{"time":"2025-05-04T21:11:37.9625149+04:00","level":"INFO","msg":"Входящий запрос","Method":"GET","Path":"/list","Time":555200}
+{"time":"2025-05-04T21:11:56.7967699+04:00","level":"INFO","msg":"Входящий запрос","Method":"DELETE","Path":"/delete","Time":23499300}
+{"time":"2025-05-04T21:12:17.6433088+04:00","level":"INFO","msg":"Входящий запрос","Method":"GET","Path":"/list","Time":0}
+{"time":"2025-05-04T21:12:28.0978124+04:00","level":"INFO","msg":"Начало завершения работы"}
+{"time":"2025-05-04T21:12:28.0998785+04:00","level":"INFO","msg":"Работа сервера прекращена корректно"}
+{"time":"2025-05-10T11:14:41.238608+04:00","level":"ERROR","msg":"Ошибка инициализации данных","err":"Не удалось проверить соединение:dial tcp: lookup db: no such host"}
+{"time":"2025-05-10T11:15:27.3910776+04:00","level":"ERROR","msg":"Ошибка инициализации данных","err":"Не удалось проверить соединение:dial tcp: lookup db: no such host"}
+{"time":"2025-05-10T11:42:17.7354392+04:00","level":"ERROR","msg":"Ошибка инициализации данных","err":"Не удалось проверить соединение:pq: \ufffd\ufffd\ufffd\ufffd\ufffd\ufffd\ufffd\ufffd\ufffd\ufffd\ufffd\ufffd \"todo_user\" \ufffd\ufffd \ufffd\ufffd\ufffd\ufffd\ufffd\ufffd \ufffd\ufffd\ufffd\ufffd\ufffd\ufffd\ufffd\ufffd \ufffd\ufffd\ufffd\ufffd\ufffd\ufffd\ufffd\ufffd\ufffd\ufffd\ufffd (\ufffd\ufffd \ufffd\ufffd\ufffd\ufffd\ufffd\ufffd)"}
+{"time":"2025-05-10T11:48:26.1676088+04:00","level":"ERROR","msg":"Ошибка инициализации данных","err":"Не удалось проверить соединение:pq: \ufffd\ufffd\ufffd\ufffd\ufffd\ufffd\ufffd\ufffd\ufffd\ufffd\ufffd\ufffd \"todo_user\" \ufffd\ufffd \ufffd\ufffd\ufffd\ufffd\ufffd\ufffd \ufffd\ufffd\ufffd\ufffd\ufffd\ufffd\ufffd\ufffd \ufffd\ufffd\ufffd\ufffd\ufffd\ufffd\ufffd\ufffd\ufffd\ufffd\ufffd (\ufffd\ufffd \ufffd\ufffd\ufffd\ufffd\ufffd\ufffd)"}
+{"time":"2025-05-10T11:54:58.5423135+04:00","level":"ERROR","msg":"Ошибка инициализации данных","err":"Не удалось проверить соединение:pq: \ufffd\ufffd\ufffd\ufffd\ufffd\ufffd\ufffd\ufffd\ufffd\ufffd\ufffd\ufffd \"admin\" \ufffd\ufffd \ufffd\ufffd\ufffd\ufffd\ufffd\ufffd \ufffd\ufffd\ufffd\ufffd\ufffd\ufffd\ufffd\ufffd \ufffd\ufffd\ufffd\ufffd\ufffd\ufffd\ufffd\ufffd\ufffd\ufffd\ufffd (\ufffd\ufffd \ufffd\ufffd\ufffd\ufffd\ufffd\ufffd)"}
+{"time":"2025-05-10T11:56:55.9908785+04:00","level":"INFO","msg":"Сервер запущен","port":":9999"}
+{"time":"2025-05-10T11:59:03.6740444+04:00","level":"INFO","msg":"Начало завершения работы"}
+{"time":"2025-05-10T11:59:03.6740444+04:00","level":"INFO","msg":"Работа сервера прекращена корректно"}
+{"time":"2025-05-10T12:32:04.9820487+04:00","level":"INFO","msg":"Сервер запущен","port":":9999"}
+{"time":"2025-05-10T12:32:06.9753165+04:00","level":"INFO","msg":"Начало завершения работы"}
+{"time":"2025-05-10T12:32:06.9828765+04:00","level":"INFO","msg":"Работа сервера прекращена корректно"}
+{"time":"2025-05-10T12:36:30.17021958+04:00","level":"ERROR","msg":"Ошибка инициализации данных","err":"Не удалось проверить соединение:dial tcp 127.0.0.1:5432: connect: connection refused"}
+{"time":"2025-05-10T12:44:52.6732558+04:00","level":"INFO","msg":"Сервер запущен","port":":9999"}
+{"time":"2025-05-10T12:54:28.9287726+04:00","level":"INFO","msg":"Начало завершения работы"}
+{"time":"2025-05-10T12:54:28.9287726+04:00","level":"INFO","msg":"Работа сервера прекращена корректно"}
+{"time":"2025-05-10T12:57:01.3304824+04:00","level":"INFO","msg":"Сервер запущен","port":":9999"}
+{"time":"2025-05-10T12:57:06.8253751+04:00","level":"INFO","msg":"Начало завершения работы"}
+{"time":"2025-05-10T12:57:06.8265868+04:00","level":"INFO","msg":"Работа сервера прекращена корректно"}
+{"time":"2025-05-10T17:37:12.9151421+04:00","level":"INFO","msg":"Сервер запущен","port":":9999"}
+{"time":"2025-05-10T17:38:38.2496889+04:00","level":"INFO","msg":"Начало завершения работы"}
+{"time":"2025-05-10T17:38:38.2502059+04:00","level":"INFO","msg":"Работа сервера прекращена корректно"}
+{"time":"2025-05-10T18:16:23.4726051+04:00","level":"INFO","msg":"Сервер запущен","port":":9999"}
+{"time":"2025-05-10T18:16:25.5417494+04:00","level":"INFO","msg":"Начало завершения работы"}
+{"time":"2025-05-10T18:16:25.5424117+04:00","level":"INFO","msg":"Работа сервера прекращена корректно"}
+{"time":"2025-05-11T11:36:47.3460915+04:00","level":"ERROR","msg":"Ошибка инициализации данных","err":"Не удалось проверить соединение:dial tcp: lookup db: no such host"}
+{"time":"2025-05-11T11:46:15.8053671+04:00","level":"INFO","msg":"Сервер запущен","port":":9999"}
+{"time":"2025-05-11T11:46:23.4206908+04:00","level":"INFO","msg":"Начало завершения работы"}
+{"time":"2025-05-11T11:46:23.4212046+04:00","level":"INFO","msg":"Работа сервера прекращена корректно"}
+{"time":"2025-05-11T11:51:28.342172718+04:00","level":"ERROR","msg":"Ошибка инициализации данных","err":"Не удалось проверить соединение:dial tcp 127.0.0.1:5432: connect: connection refused"}

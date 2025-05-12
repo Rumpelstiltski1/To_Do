@@ -1,7 +1,7 @@
 package httpserver
 
 import (
-	"To_Do/internal/handlers"
+	"To_Do/internal/handlers/task"
 	"To_Do/internal/repository"
 	Mymiddleware "To_Do/pkg/middleware"
 	"github.com/go-chi/chi/v5"
@@ -17,9 +17,9 @@ func NewRouter(storage *repository.Storage) http.Handler {
 	router.Use(middleware.Timeout(30 * time.Second))
 	router.Use(Mymiddleware.SlogMiddleware)
 
-	router.Post("/create", handlers.CreateTaskHandler(storage))
-	router.Get("/list", handlers.ListTaskHandler(storage))
-	router.Delete("/delete", handlers.DeleteTaskHandler(storage))
-	router.Put("/done", handlers.PutTaskHandler(storage))
+	router.Post("/create", task.CreateTaskHandler(storage))
+	router.Get("/list", task.ListTaskHandler(storage))
+	router.Delete("/delete", task.DeleteTaskHandler(storage))
+	router.Put("/done", task.PutTaskHandler(storage))
 	return router
 }

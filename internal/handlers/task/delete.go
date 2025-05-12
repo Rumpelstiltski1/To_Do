@@ -1,4 +1,4 @@
-package handlers
+package task
 
 import (
 	"To_Do/internal/models"
@@ -8,7 +8,7 @@ import (
 	"net/http"
 )
 
-func DeleteTaskHandler(s *repository.Storage) http.HandlerFunc {
+func DeleteTaskHandler(s repository.StorageInterface) http.HandlerFunc {
 	return func(w http.ResponseWriter, r *http.Request) {
 		var body models.DeleteTaskRequest
 

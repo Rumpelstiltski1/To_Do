@@ -1,4 +1,4 @@
-package handlers
+package task
 
 import (
 	"To_Do/internal/models"
@@ -13,8 +13,8 @@ import (
 
 func TestCreateTaskHandler_Success(t *testing.T) {
 	mockStorage := &repository.MockStorage{}
-
-	mockStorage.On("CreateTask", "Test title", "Test content").Return(nil)
+	var id = 123
+	mockStorage.On("CreateTask", "Test title", "Test content").Return(id, nil)
 
 	body := models.CreateTaskRequest{
 		Title:   "Test title",
@@ -29,7 +29,10 @@ func TestCreateTaskHandler_Success(t *testing.T) {
 	handler.ServeHTTP(rr, req)
 
 	assert.Equal(t, http.StatusCreated, rr.Code)
-	assert.Equal(t, "Задача добавлена", rr.Body.String())
-
+	var response map[string]interface{}
+	err := json.Unmarshal(rr.Body.Bytes(), &response)
+	assert.NoError(t, err)
+	assert.Equal(t, "Задача добавлена. ID созданной задачи:", response["message"])
+	assert.EqualValues(t, id, response["id"])
 	mockStorage.AssertExpectations(t)
 }

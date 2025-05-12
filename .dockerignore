@@ -1,0 +1,9 @@
+.git
+.idea
+*.md
+*.log
+.env
+.env.example
+*.test
+*.out
+bin/

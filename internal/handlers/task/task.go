@@ -1,4 +1,4 @@
-package handlers
+package task
 
 import (
 	"To_Do/internal/models"
@@ -17,7 +17,7 @@ func CreateTaskHandler(storage repository.StorageInterface) http.HandlerFunc {
 			return
 		}
 
-		err := storage.CreateTask(body.Title, body.Content)
+		id, err := storage.CreateTask(body.Title, body.Content)
 		if err != nil {
 			logger.Logger.Error("Ошибка при создании задачи:", "err", err)
 			http.Error(w, "Failed to create task", http.StatusInternalServerError)
@@ -25,7 +25,12 @@ func CreateTaskHandler(storage repository.StorageInterface) http.HandlerFunc {
 			return
 		}
 
+		defent := map[string]interface{}{
+			"message": "Задача добавлена. ID созданной задачи:",
+			"id":      id,
+		}
+		w.Header().Set("Content-Type", "application/json")
 		w.WriteHeader(http.StatusCreated)
-		w.Write([]byte("Задача добавлена"))
+		json.NewEncoder(w).Encode(defent)
 	}
 }

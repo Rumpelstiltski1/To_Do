@@ -3,6 +3,7 @@ package main
 import (
 	"To_Do/config"
 	"To_Do/internal/httpserver"
+	"To_Do/internal/migrations"
 	"To_Do/internal/repository"
 	"To_Do/pkg/database"
 	"To_Do/pkg/logger"
@@ -18,9 +19,16 @@ import (
 )
 
 func main() {
-	err := godotenv.Load()
-	if err != nil {
-		log.Fatal("Ошибка при загрузке .env")
+
+	if os.Getenv("ENV") != "production" {
+		if err := migrations.RunMigrations(); err != nil {
+			logger.Logger.Error("Ошибка запуска миграций ", "err", err)
+			log.Fatal(err)
+		}
+		if err := godotenv.Load(".env"); err != nil {
+			log.Fatal("Ошибка при загрузке .env файла в dev-среде")
+
+		}
 	}
 	cfg := config.LoadConfig()
 
