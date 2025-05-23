@@ -8,11 +8,11 @@ type CreateTaskRequest struct {
 }
 
 type ListTaskResponse struct {
-	Id         int       `json:"id"`
-	Title      string    `json:"title"`
-	Content    string    `json:"content"`
-	Status     bool      `json:"status"`
-	Created_at time.Time `json:"created_at"`
+	Id        int       `json:"id"`
+	Title     string    `json:"title"`
+	Content   string    `json:"content"`
+	Status    bool      `json:"status"`
+	CreatedAt time.Time `json:"created_at"`
 }
 
 type DeleteTaskRequest struct {

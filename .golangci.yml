@@ -1,0 +1,49 @@
+version: "1.57"
+run:
+  timeout: 5m
+  tests: true       # проверять тесты
+  skip-dirs:
+    - vendor
+    - internal/mocks # если у тебя мок-код автогенерится сюда
+    - internal/migrations # миграции — не трогать
+    - bin             # бинарники
+  skip-files:
+    - ".*_gen.go"     # автогенерируемые файлы
+
+linters:
+  enable:
+    - govet          # базовый статический анализ
+    - errcheck       # проверка ошибок (чтобы не забыть обработать err)
+    - staticcheck    # продвинутый статика-анализ (уходит глубже govet)
+    - unused         # неиспользуемые переменные, функции
+    - gosimple       # упрощения в коде
+    - structcheck    # неиспользуемые поля в структурах
+    - gofmt          # проверка форматирования (go fmt)
+    - goimports      # проверка и автоимпорт
+    - depguard       # запрет на некоторые импорты (можно настроить)
+
+issues:
+  max-issues-per-linter: 50
+  max-same-issues: 5
+  exclude-use-default: false
+
+  exclude-rules:
+    - path: "_test\\.go"
+      linters:
+        - errcheck
+
+    # игнорируем проверку golint на комментарии для моков (они часто сгенерированы)
+    - path: "internal/mocks/"
+      linters:
+        - golint
+
+    # игнорируем ошибки форматирования в миграциях
+    - path: "internal/migrations/"
+      linters:
+        - gofmt
+
+    # исключаем ошибки "import not used" в mock_storage.go, если там есть
+    - path: "internal/repository/mock_storage.go"
+      linters:
+        - unused
+        - goimports

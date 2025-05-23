@@ -1,14 +1,16 @@
 package task
 
 import (
+	"To_Do/internal/cache"
 	"To_Do/internal/models"
 	"To_Do/internal/repository"
 	"To_Do/pkg/logger"
 	"encoding/json"
+	"fmt"
 	"net/http"
 )
 
-func DeleteTaskHandler(s repository.StorageInterface) http.HandlerFunc {
+func DeleteTaskHandler(s repository.StorageInterface, cache cache.Cache) http.HandlerFunc {
 	return func(w http.ResponseWriter, r *http.Request) {
 		var body models.DeleteTaskRequest
 
@@ -23,6 +25,17 @@ func DeleteTaskHandler(s repository.StorageInterface) http.HandlerFunc {
 			http.Error(w, "Failed to delete task", http.StatusInternalServerError)
 			return
 		}
+
+		ctx := r.Context()
+		err = cache.Del(ctx, fmt.Sprintf("task:%d", body.Id))
+		if err != nil {
+			logger.Logger.Error("Ошибка удаления кеша задачи", "err", err)
+		}
+		err = cache.Del(ctx, "task_all")
+		if err != nil {
+			logger.Logger.Error("Не удалось очистить кеш", "err", err)
+		}
+
 		w.WriteHeader(http.StatusOK)
 		w.Write([]byte("Задача удалена"))
 	}

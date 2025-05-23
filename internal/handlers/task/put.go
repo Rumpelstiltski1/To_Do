@@ -1,29 +1,42 @@
 package task
 
 import (
+	"To_Do/internal/cache"
 	"To_Do/internal/models"
 	"To_Do/internal/repository"
 	"To_Do/pkg/logger"
 	"encoding/json"
+	"fmt"
 	"net/http"
 )
 
-func PutTaskHandler(storage repository.StorageInterface) http.HandlerFunc {
+func PutTaskHandler(storage repository.StorageInterface, cache cache.Cache) http.HandlerFunc {
 	return func(w http.ResponseWriter, r *http.Request) {
-		var bodys models.PutTaskRequest
-		if err := json.NewDecoder(r.Body).Decode(&bodys); err != nil {
+		var body models.PutTaskRequest
+		if err := json.NewDecoder(r.Body).Decode(&body); err != nil {
 			logger.Logger.Error("Неверное тело запроса", "err", err)
 			http.Error(w, "Неверный формат запроса", http.StatusBadRequest)
+			return
 		}
-		err := storage.PutTask(bodys.Status, bodys.Id)
+		err := storage.PutTask(body.Status, body.Id)
 		if err != nil {
 			logger.Logger.Error("Не удалось изменить задачу", "err", err)
 			http.Error(w, "Внутренняя ошибка сервера", http.StatusInternalServerError)
 			return
 		}
 		response := models.PutTaskRequest{
-			Id:     bodys.Id,
-			Status: bodys.Status,
+			Id:     body.Id,
+			Status: body.Status,
+		}
+
+		ctx := r.Context()
+		err = cache.Del(ctx, fmt.Sprintf("task:%d", body.Id))
+		if err != nil {
+			logger.Logger.Error("Ошибка удаления кеша задачи", "err", err)
+		}
+		err = cache.Del(ctx, "task_all")
+		if err != nil {
+			logger.Logger.Error("Не удалось очистить кеш", "err", err)
 		}
 
 		w.Header().Set("Content-Type", "application/json")

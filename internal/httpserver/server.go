@@ -2,16 +2,17 @@ package httpserver
 
 import (
 	"To_Do/config"
+	"To_Do/internal/cache"
 	"To_Do/internal/repository"
 	"context"
 	"net/http"
 	"time"
 )
 
-func NewServer(cfg *config.Config, storage *repository.Storage) *http.Server {
+func NewServer(cfg *config.Config, storage *repository.Storage, cache cache.Cache) *http.Server {
 	server := &http.Server{
 		Addr:              cfg.Port,
-		Handler:           NewRouter(storage),
+		Handler:           NewRouter(storage, cache),
 		ReadTimeout:       cfg.Server.ReadTimeout,
 		ReadHeaderTimeout: cfg.Server.ReadHeaderTimeout,
 		WriteTimeout:      cfg.Server.WriteTimeout,

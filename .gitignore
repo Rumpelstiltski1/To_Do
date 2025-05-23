@@ -1,8 +1,9 @@
 .idea
 *.md
 *.log
-.env.production
 .env
+.env.*
+!.env.example
 *.test
 *.out
 bin/

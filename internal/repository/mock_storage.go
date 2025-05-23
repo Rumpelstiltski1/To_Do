@@ -9,9 +9,9 @@ type MockStorage struct {
 	mock.Mock
 }
 
-func (m *MockStorage) CreateTask(title, content string) (int, error) {
+func (m *MockStorage) CreateTask(title, content string) (*models.ListTaskResponse, error) {
 	args := m.Called(title, content)
-	return args.Get(0).(int), args.Error(1)
+	return args.Get(0).(*models.ListTaskResponse), args.Error(1)
 }
 
 func (m *MockStorage) ListTask() ([]models.ListTaskResponse, error) {

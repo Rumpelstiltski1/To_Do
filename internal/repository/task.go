@@ -14,12 +14,11 @@ func NewStorage(db *sql.DB) *Storage {
 	return &Storage{db: db}
 }
 
-var id int
+func (s *Storage) CreateTask(title, content string) (*models.ListTaskResponse, error) {
+	var task models.ListTaskResponse
+	err := s.db.QueryRow("INSERT INTO tasks(title, content) VALUES ($1, $2) RETURNING id, title, content, status, created_at", title, content).Scan(&task.Id, &task.Title, &task.Content, &task.Status, &task.CreatedAt)
 
-func (s *Storage) CreateTask(title string, content string) (int, error) {
-	err := s.db.QueryRow("INSERT INTO tasks(title, content) VALUES ($1, $2) RETURNING id", title, content).Scan(&id)
-
-	return id, err
+	return &task, err
 }
 
 func (s *Storage) PutTask(status bool, id int) error {
@@ -46,7 +45,7 @@ func (s *Storage) ListTask() ([]models.ListTaskResponse, error) {
 
 	for rows.Next() {
 		task := models.ListTaskResponse{}
-		err := rows.Scan(&task.Id, &task.Title, &task.Content, &task.Status, &task.Created_at)
+		err := rows.Scan(&task.Id, &task.Title, &task.Content, &task.Status, &task.CreatedAt)
 		if err != nil {
 			return nil, err
 

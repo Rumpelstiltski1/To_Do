@@ -1,7 +1,9 @@
 package task
 
 import (
+	"To_Do/internal/cache"
 	"To_Do/internal/models"
+	"To_Do/internal/redis"
 	"To_Do/internal/repository"
 	"encoding/json"
 	"github.com/stretchr/testify/assert"
@@ -15,26 +17,35 @@ func TestListTaskHandler_Success(t *testing.T) {
 	mockStorage := &repository.MockStorage{}
 
 	tasks := []models.ListTaskResponse{{
-		Id:         1,
-		Title:      "Test task",
-		Content:    "Test content",
-		Status:     false,
-		Created_at: time.Now(),
+		Id:        1,
+		Title:     "Test task",
+		Content:   "Test content",
+		Status:    false,
+		CreatedAt: time.Now(),
 	}, {
-		Id:         2,
-		Title:      "Test task2",
-		Content:    "Test content2",
-		Status:     true,
-		Created_at: time.Now(),
+		Id:        2,
+		Title:     "Test task2",
+		Content:   "Test content2",
+		Status:    true,
+		CreatedAt: time.Now(),
 	},
 	}
 
 	mockStorage.On("ListTask").Return(tasks, nil)
 
+	mockRedis := cache.NewMockRedis()
+	mockCache := cache.NewRedisCache(&redis.RedisClient{
+		Client: mockRedis,
+		TTL:    time.Second * 5,
+	})
+
 	req := httptest.NewRequest(http.MethodGet, "/list", nil)
 	rr := httptest.NewRecorder()
 
-	handlers := ListTaskHandler(mockStorage)
+	mockRedis.Data["task:5"] = []byte("some data")
+	mockRedis.Data["task_all"] = []byte("cached list")
+
+	handlers := ListTaskHandler(mockStorage, mockCache)
 	handlers.ServeHTTP(rr, req)
 
 	assert.Equal(t, http.StatusOK, rr.Code)
@@ -49,5 +60,9 @@ func TestListTaskHandler_Success(t *testing.T) {
 		assert.Equal(t, tasks[i].Content, actualTask[i].Content)
 		assert.Equal(t, tasks[i].Status, actualTask[i].Status)
 	}
+
+	cached, ok := mockRedis.Data["task_all"]
+	assert.True(t, ok, "task_all должен быть записан в кэш")
+	assert.NotEmpty(t, cached, "task_all не должен быть пустым")
 	mockStorage.AssertExpectations(t)
 }
