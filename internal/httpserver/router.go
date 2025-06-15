@@ -3,6 +3,7 @@ package httpserver
 import (
 	"To_Do/internal/cache"
 	"To_Do/internal/handlers/task"
+	"To_Do/internal/kafka"
 	"To_Do/internal/metricks"
 	"To_Do/internal/repository"
 	Mymiddleware "To_Do/pkg/middleware"
@@ -13,18 +14,18 @@ import (
 	"time"
 )
 
-func NewRouter(storage *repository.Storage, cache cache.Cache) http.Handler {
+func NewRouter(storage *repository.Storage, cache cache.Cache, producer kafka.KafkaProducer) http.Handler {
 	router := chi.NewRouter()
 
 	router.Use(middleware.RequestID)
 	router.Use(middleware.Timeout(30 * time.Second))
 	router.Use(Mymiddleware.SlogMiddleware)
-	router.Use(metricks.MetricsMiddlware)
+	router.Use(metricks.MetricsMiddleware)
 
-	router.Post("/create", task.CreateTaskHandler(storage, cache))
+	router.Post("/create", task.CreateTaskHandler(storage, cache, producer))
 	router.Get("/list", task.ListTaskHandler(storage, cache))
-	router.Delete("/delete", task.DeleteTaskHandler(storage, cache))
-	router.Put("/done", task.PutTaskHandler(storage, cache))
+	router.Delete("/delete", task.DeleteTaskHandler(storage, cache, producer))
+	router.Put("/done", task.PutTaskHandler(storage, cache, producer))
 	router.Handle("/metrics", promhttp.Handler())
 	return router
 }

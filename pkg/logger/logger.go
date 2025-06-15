@@ -34,10 +34,9 @@ func InitLog(stage string) {
 	if err != nil {
 		log.Fatal("Не удалось открыть файл для логирования", err)
 	}
-
 	MultiWriter := io.MultiWriter(file, os.Stdout)
-	handler := slog.NewJSONHandler(MultiWriter, &slog.HandlerOptions{Level: level})
 
+	handler := slog.NewJSONHandler(MultiWriter, &slog.HandlerOptions{Level: level})
 	Logger = slog.New(handler)
 	slog.SetDefault(Logger)
 }

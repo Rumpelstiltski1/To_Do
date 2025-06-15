@@ -2,6 +2,7 @@ package task
 
 import (
 	"To_Do/internal/cache"
+	"To_Do/internal/kafka"
 	"To_Do/internal/models"
 	"To_Do/internal/repository"
 	"To_Do/pkg/logger"
@@ -10,7 +11,7 @@ import (
 	"net/http"
 )
 
-func DeleteTaskHandler(s repository.StorageInterface, cache cache.Cache) http.HandlerFunc {
+func DeleteTaskHandler(s repository.StorageInterface, cache cache.Cache, producer kafka.KafkaProducer) http.HandlerFunc {
 	return func(w http.ResponseWriter, r *http.Request) {
 		var body models.DeleteTaskRequest
 
@@ -35,7 +36,10 @@ func DeleteTaskHandler(s repository.StorageInterface, cache cache.Cache) http.Ha
 		if err != nil {
 			logger.Logger.Error("Не удалось очистить кеш", "err", err)
 		}
-
+		event := fmt.Sprintf("action=update, id=%d", body.Id)
+		if err := producer.SendMessage(ctx, []byte("delete"), []byte(event)); err != nil {
+			logger.Logger.Error("Не удалось отправить сообщение в Kafka", "err", err)
+		}
 		w.WriteHeader(http.StatusOK)
 		w.Write([]byte("Задача удалена"))
 	}

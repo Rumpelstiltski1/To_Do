@@ -11,7 +11,7 @@ type responseRecorder struct {
 	statusCode int
 }
 
-func MetricsMiddlware(next http.Handler) http.Handler {
+func MetricsMiddleware(next http.Handler) http.Handler {
 	return http.HandlerFunc(func(writer http.ResponseWriter, request *http.Request) {
 
 		start := time.Now()

@@ -11,14 +11,14 @@ import (
 )
 
 func RunMigrations() error {
-	migratPath, err := filepath.Abs("internal/migrations")
+	migratePath, err := filepath.Abs("internal/migrations")
 	if err != nil {
 		logger.Logger.Error("ошибка получения пути к миграциям:", "err", err)
 		return err
 	}
-	migrateURL := "file://" + filepath.ToSlash(migratPath)
+	migrateURL := "file://" + filepath.ToSlash(migratePath)
 	dbURL := os.Getenv("DATABASE_URL")
-	if dbURL == " " {
+	if dbURL == "" {
 		logger.Logger.Error("Ошибка получения URL базы данных", "err", err)
 		return err
 	}

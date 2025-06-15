@@ -5,6 +5,7 @@ import (
 	"To_Do/internal/background"
 	"To_Do/internal/cache"
 	"To_Do/internal/httpserver"
+	"To_Do/internal/kafka"
 	"To_Do/internal/metricks"
 	"To_Do/internal/migrations"
 	"To_Do/internal/redis"
@@ -23,6 +24,9 @@ import (
 )
 
 func main() {
+
+	ctx, cancel := context.WithCancel(context.Background())
+	defer cancel()
 
 	if os.Getenv("ENV") != "production" {
 		if err := godotenv.Load(".env"); err != nil {
@@ -80,18 +84,22 @@ func main() {
 	}
 	defer db.Close()
 
-	if os.Getenv("ENV") != "production" {
-		if err := migrations.RunMigrations(); err != nil {
-			logger.Logger.Error("Ошибка запуска миграций ", "err", err)
-			log.Fatal(err)
-		}
-	}
-	metricks.InitMetriks()
 	storage := repository.NewStorage(db)
-	server := httpserver.NewServer(cfg, storage, cach)
 
-	ctx, cancel := context.WithTimeout(context.Background(), 10*time.Second)
-	defer cancel()
+	// Подключаем кафку
+	producer := kafka.NewProducer("kafka:9092", "todo_events")
+	defer producer.Close()
+	consumer := kafka.NewConsumer("kafka:9092", "todo_events", "todo_group", storage)
+	go func() {
+		if err := consumer.Start(ctx); err != nil {
+			logger.Logger.Error("Kafka consumer завершился с ошибкой", "err", err)
+		}
+	}()
+	defer consumer.Close()
+	// Метрика
+	metricks.InitMetriks()
+
+	server := httpserver.NewServer(cfg, storage, cach, producer)
 
 	sigChan := make(chan os.Signal, 1)
 	signal.Notify(sigChan, syscall.SIGINT, syscall.SIGTERM)

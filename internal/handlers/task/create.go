@@ -2,15 +2,17 @@ package task
 
 import (
 	"To_Do/internal/cache"
+	"To_Do/internal/kafka"
 	"To_Do/internal/models"
 	"To_Do/internal/repository"
 	"To_Do/pkg/logger"
 	"encoding/json"
 	"fmt"
 	"net/http"
+	"sync"
 )
 
-func CreateTaskHandler(storage repository.StorageInterface, cache cache.Cache) http.HandlerFunc {
+func CreateTaskHandler(storage repository.StorageInterface, cache cache.Cache, producer kafka.KafkaProducer) http.HandlerFunc {
 	return func(w http.ResponseWriter, r *http.Request) {
 		var body models.CreateTaskRequest
 
@@ -29,14 +31,29 @@ func CreateTaskHandler(storage repository.StorageInterface, cache cache.Cache) h
 
 		ctx := r.Context()
 		cacheKey := fmt.Sprint("task:", task.Id)
-		if err := cache.Set(ctx, cacheKey, task); err != nil {
-			logger.Logger.Error("Ошибка кеширования задачи", "err", err)
-		}
+		var wg sync.WaitGroup
+		wg.Add(2)
 
-		if err := cache.Del(ctx, "task_all"); err != nil {
-			logger.Logger.Error("Не удалось очистить кеш списка задач:", "err", err)
-		}
+		go func() {
+			defer wg.Done()
+			if err := cache.Set(ctx, cacheKey, task); err != nil {
+				logger.Logger.Error("Ошибка кеширования задачи", "err", err)
+			}
+		}()
 
+		go func() {
+			defer wg.Done()
+			if err := cache.Del(ctx, "task_all"); err != nil {
+				logger.Logger.Error("Не удалось очистить кеш списка задач:", "err", err)
+			}
+		}()
+
+		wg.Wait()
+
+		event := fmt.Sprintf("action=create, id=%d, title=%q, content=%q, time=%s", task.Id, task.Title, task.Content, task.CreatedAt)
+		if err := producer.SendMessage(ctx, []byte("create"), []byte(event)); err != nil {
+			logger.Logger.Error("Не удалось отправить сообщение в Kafka", "err", err)
+		}
 		response := map[string]interface{}{
 			"message": "Задача добавлена. ID созданной задачи:",
 			"id":      task.Id,

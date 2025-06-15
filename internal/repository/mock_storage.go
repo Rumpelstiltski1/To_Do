@@ -2,6 +2,7 @@ package repository
 
 import (
 	"To_Do/internal/models"
+	"context"
 	"github.com/stretchr/testify/mock"
 )
 
@@ -26,5 +27,9 @@ func (m *MockStorage) DeleteTask(id int) error {
 
 func (m *MockStorage) PutTask(status bool, id int) error {
 	args := m.Called(status, id)
+	return args.Error(0)
+}
+func (m *MockStorage) SaveEvent(ctx context.Context, event models.TaskEvent) error {
+	args := m.Called(ctx, event)
 	return args.Error(0)
 }

@@ -7,7 +7,8 @@ import (
 )
 
 type Storage struct {
-	db *sql.DB
+	db              *sql.DB
+	EventRepository *MockStorage
 }
 
 func NewStorage(db *sql.DB) *Storage {
